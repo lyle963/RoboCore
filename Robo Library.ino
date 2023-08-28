@@ -277,22 +277,33 @@ void replay(){
 
 
 
+// W
+// A
+// D
+// C:90:1000,70:1000,80:1000,70:1000,80:0,0:1000,
+// C:75:3000,65:3000,155:3000,70:3000,80:0,0:3000,
+// C:75:3000,35:3000,125:3000,70:3000,80:0,0:3000,
+// C:75:10,35:10,125:10,70:10,80:10,50:1000,
+// C:75:3000,65:3000,155:3000,70:3000,70:0,50:3000,
+// C:180:2500,65:3000,155:3000,70:3000,70:0,50:3000,
 
-// Accept a String with all angles Eg: A:90,45,45,90,180,180,
-String InputBuffer = "";
-void getSerial(){  
+void getSerial(){ 
+  String InputBuffer = "";
   int success = -1;
+  if(Serial1.available()){
+    String InputBuffer = "";
+  }
   while (Serial1.available()) {//Append chars to the string
       char c =Serial1.read();
+      delay(3);
       if(c==10 || c==13 || c==' ' || c == 0)
-        c = ' ';
+        break;
       InputBuffer += c;
-      delay(1);
       success = 0;
   }
 
-  if (Robot.getUpdateCount()==6);
-  else return; 
+  // if (Robot.getUpdateCount()==6);
+  // else return; 
 
     String CMD ="";
     for(int i=0;i<InputBuffer.length();i++){
@@ -300,12 +311,12 @@ void getSerial(){
       if(c!=' ') CMD += InputBuffer[i];  
     }
     if(CMD != ""){
-      Serial1.println("Input Buffer:");
+      // Serial1.println("Input Buffer:");
       success = 0;
     }
     else return;
     if(CMD[0]==',') CMD = CMD.substring(1,CMD.length());
-    Serial1.println(CMD);
+    // Serial1.println(CMD);
     String val = "";//initialise value
     byte motorCount = 0;//iterate thru string
     switch(CMD[0]){
@@ -363,9 +374,10 @@ void getSerial(){
                       Serial1.println("Motor["+String(motorCount-1)+"] Time="+String(val));
                       val = "";
                       if (motorCount == MOTORCOUNT) {
-                        Serial1.println("Whats left:");
-                        Serial1.println(CMD.substring(i+1,CMD.length()));
-                        InputBuffer = CMD.substring(i+1,CMD.length());
+                        Serial1.println("OK");
+                        // Serial1.println(CMD.substring(i+1,CMD.length()));
+                        // InputBuffer = CMD.substring(i+1,CMD.length());
+                        InputBuffer = "";
                         success = 1;
                         return;
                       }
